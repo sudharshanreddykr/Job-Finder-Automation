@@ -1,7 +1,14 @@
 import "dotenv/config";
 import { createTransport } from "nodemailer";
+import { retryWithBackoff } from "./retryUtils.js";
 
-async function sendEmail(jobs) {
+async function sendEmail(jobs, recipientConfig = {}) {
+  const {
+    recipientEmail = process.env.EMAIL_TO,
+    recipientName = process.env.RECIPIENT_NAME || "Developer",
+    jobType = process.env.JOB_TYPE || "Full-Stack",
+  } = recipientConfig;
+
   const transporter = createTransport({
     service: "gmail",
     auth: {
@@ -13,7 +20,8 @@ async function sendEmail(jobs) {
   let table = `
   <div style="font-family: Arial, sans-serif; background:#f4f6f8; padding:20px">
     
-    <h2 style="color:#2c3e50;">🚀 Daily Bangalore Full-Stack Jobs</h2>
+    <h1 style="color:#2c3e50;">Hi ${recipientName},</h1>
+    <h2 style="color:#2c3e50;">🚀 Daily Bangalore ${jobType} Jobs</h2>
     
     <table style="
       border-collapse: collapse;
@@ -72,14 +80,17 @@ async function sendEmail(jobs) {
   </div>
   `;
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: process.env.EMAIL_TO,
-    subject: "🚀 Daily Bangalore Full Stack Jobs",
-    html: table,
+  // Retry sending email with backoff
+  await retryWithBackoff(async () => {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: recipientEmail,
+      subject: `🚀 Daily Bangalore ${jobType} Jobs`,
+      html: table,
+    });
   });
 
-  console.log("Email sent successfully");
+  console.log(`Email sent successfully to ${recipientEmail}`);
 }
 
 export default sendEmail;
