@@ -11,12 +11,13 @@ import sendEmail from "./emailSender.js";
 async function runJobFinder() {
   const results = await Promise.all([
     linkedin(),
-    wellfound(),
     naukri(),
+    instahyre(),
     glassdoor(),
+    wellfound(),
   ]);
 
-  const jobs = results.flat().slice(0, 50);
+  const jobs = results.flat().slice(0, process.env.MAX_JOBS || 50);
 
   await sendEmail(jobs);
 }
