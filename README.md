@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Job-Finder-Automation
-=======
 # Job Finder Automation
 
 An automated job scraper that searches for developer jobs across multiple platforms and sends daily email summaries.
@@ -342,4 +339,3 @@ ISC
 ## Support
 
 For issues or improvements, check the logs and verify all environment variables are correctly set.
->>>>>>> 9441c9b (Initial commit: job finder automation app with PM2 setup)
