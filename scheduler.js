@@ -1,10 +1,12 @@
 import { schedule } from "node-cron";
 
 import linkedin from "./scrapers/linkedin.js";
+import naukriJobs from "./scrapers/naukri.js";
 
 import sendEmail from "./emailSender.js";
 import parseResume from "./resumeParser.js";
 import { matchJobsWithGroq } from "./groqMatcher.js";
+import { matchJobsWithOllama } from "./llamaModel.js";
 import { filterJobsByDate } from "./jobFilter.js";
 
 async function runJobFinder() {
@@ -25,16 +27,25 @@ async function runJobFinder() {
       console.warn("❌ LinkedIn scraping failed:", e.message);
       return [];
     }),
+    naukriJobs().catch((e) => {
+      console.warn("❌ Naukri scraping failed:", e.message);
+      return [];
+    }),
   ]);
 
   const allJobs = results.flat().slice(0, process.env.MAX_JOBS || 200);
 
-  console.log(`📊 Scraped ${allJobs.length} jobs total`);
+  console.log(`📊 Scraped ${allJobs.length} jobs total`, allJobs);
 
   try {
     // Use Groq AI to match and rank jobs
     console.log("🤖 Using Groq AI to match jobs with your skills...");
-    let matchedJobs = await matchJobsWithGroq(
+    // let matchedJobs = await matchJobsWithGroq(
+    //   allJobs,
+    //   resumeContent,
+    //   process.env.GROQ_API_KEY,
+    // );
+    let matchedJobs = await matchJobsWithOllama(
       allJobs,
       resumeContent,
       process.env.GROQ_API_KEY,
