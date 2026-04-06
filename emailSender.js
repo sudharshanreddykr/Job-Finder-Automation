@@ -406,14 +406,17 @@ ${jobGrid}
 
   for (const recipient of recipients) {
     await retryWithBackoff(async () => {
-      await transporter.sendMail({
-        from: `"Job Finder 🤖" <${process.env.EMAIL_USER}>`,
-        to: `"${recipient.name}" <${recipient.email}>`,
-        subject: `🎯 ${jobs.length} Jobs Found — Best Match ${bestMatch}%`,
-        html: buildHtml(recipient.name),
-      });
+      await transporter
+        .sendMail({
+          from: `"Job Finder 🤖" <${process.env.EMAIL_USER}>`,
+          to: `"${recipient.name}" <${recipient.email}>`,
+          subject: `🎯 ${jobs.length} Jobs Found — Best Match ${bestMatch}%`,
+          html: buildHtml(recipient.name),
+        })
+        .then(() => {
+          console.log(`📧 Sent to ${recipient.name}.....`);
+        });
     });
-
     console.log(`📧 Sent to ${recipient.name}`);
   }
 }

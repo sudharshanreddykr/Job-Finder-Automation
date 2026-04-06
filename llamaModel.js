@@ -2,7 +2,7 @@ import axios from "axios";
 
 async function matchJobsWithOllama(jobs, resumeContent) {
   const matchedJobs = [];
-
+  console.log("Matching jobs with Ollama...", jobs);
   for (const job of jobs) {
     try {
       const score = await scoreJobWithOllama(job, resumeContent);
