@@ -67,7 +67,7 @@ async function naukriJobs() {
                 link,
               });
             }
-          } catch (e) {
+          } catch (_error) {
             // Skip malformed cards
           }
         });

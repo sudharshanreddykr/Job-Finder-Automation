@@ -5,7 +5,6 @@ import naukriJobs from "./scrapers/naukri.js";
 
 import sendEmail from "./emailSender.js";
 import parseResume from "./resumeParser.js";
-import { matchJobsWithGroq } from "./groqMatcher.js";
 import { matchJobsWithOllama } from "./llamaModel.js";
 import { filterJobsByDate } from "./jobFilter.js";
 

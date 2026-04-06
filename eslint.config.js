@@ -3,6 +3,16 @@ export default [
     ignores: ["node_modules/**", ".github/**", "*.pdf"],
   },
   {
+    files: ["pm2.config.js"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "commonjs",
+      globals: {
+        module: "readonly",
+      },
+    },
+  },
+  {
     files: ["**/*.js"],
     languageOptions: {
       ecmaVersion: "latest",
